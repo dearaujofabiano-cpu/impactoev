@@ -83,34 +83,48 @@
             }
         }
 
-        // --- FUNÇÃO ATUALIZADA ---
         async function submitToGoogleForms() {
-            const formActionURL = 'URL_DO_SEU_FORMULARIO_AQUI/formResponse'; // MANTENHA SEU LINK AQUI
+            const formActionURL = 'https://docs.google.com/forms/d/e/1FAIpQLSfkFK4MLBKlXTcj4rnn9XYUROUFP_tVHrTIb-DlibCAyTDdag/formResponse'; // MANTENHA SEU LINK AQUI
             const groupName = localStorage.getItem('groupName');
             
             const formData = new FormData();
-            formData.append('ENTRY_NOME_GRUPO_AQUI', groupName); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_RESPOSTA_1_AQUI', userAnswers[0] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_RESPOSTA_2_AQUI', userAnswers[1] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_RESPOSTA_3_AQUI', userAnswers[2] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_RESPOSTA_4_AQUI', userAnswers[3] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_RESPOSTA_5_AQUI', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.1025647143', groupName); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.2131390769', userAnswers[0] || 'N/A'); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.1414569743', userAnswers[1] || 'N/A'); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.2134115308', userAnswers[2] || 'N/A'); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.1679668907', userAnswers[3] || 'N/A'); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.1459899476', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
+            formData.append('entry.923869219', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
             
+            const detailedResults = questions.map((question, index) => {
+                const userSelection = userAnswers[index] ? userAnswers[index].split('; ') : [];
+                return {
+                    questionText: question.question,
+                    allOptions: question.options,
+                    correctAnswers: question.correctAnswers,
+                    userSelection: userSelection,
+                    isAnulled: userSelection.length === question.options.length 
+                };
+            });
+
+            const quizData = {
+                group: groupName,
+                score: score,
+                totalQuestions: maxScore,
+                detailedAnswers: detailedResults
+            };
+            localStorage.setItem('quizResults', JSON.stringify(quizData));
+
             try {
-                // Envia os dados para o Google Forms
                 await fetch(formActionURL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: new URLSearchParams(formData)
                 });
                 
-                // Limpa os dados da sessão
                 localStorage.removeItem('groupName');
-
-                // Alerta o usuário e redireciona para a página inicial
-                alert('Respostas enviadas com sucesso! Obrigado por participar.');
-                window.location.href = 'index.html';
+                // A MUDANÇA MAIS IMPORTANTE ESTÁ AQUI:
+                window.location.href = 'resumo-quiz.html';
 
             } catch (error) {
                 console.error('Erro ao enviar o formulário:', error);
