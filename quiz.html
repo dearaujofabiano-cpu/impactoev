@@ -131,8 +131,6 @@
             }
         }
       
-        // <<< O ERRO ESTAVA AQUI. O CÓDIGO ABAIXO ESTAVA FORA DE QUALQUER LUGAR. AGORA ESTÁ CORRETO.
-
         nextButton.addEventListener('click', () => {
             const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
             if (selectedOptions.length === 0) {
@@ -168,4 +166,10 @@
         });
 
         if (!localStorage.getItem('groupName')) {
-            window.
+            window.location.href = 'index.html';
+        } else {
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
