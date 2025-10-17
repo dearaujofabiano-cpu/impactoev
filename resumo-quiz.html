@@ -10,7 +10,7 @@
     <div class="container" id="summary-page">
         <header class="page-header">
             <h2>Quiz Finalizado com Sucesso!</h2>
-            <p>Confira abaixo o resumo das suas respostas e sua pontuação.</p>
+            <p>Confira abaixo o detalhe de suas respostas e sua pontuação.</p>
         </header>
 
         <main class="summary-box">
@@ -26,29 +26,7 @@
                 <p id="summary-score" style="font-weight: bold; font-size: 1.2rem;">Carregando...</p>
             </div>
 
-            <h3 style="margin-top: 2rem;">Suas Respostas:</h3>
-
-            <div class="summary-item">
-                <strong>CENA 1:</strong>
-                <p id="summary-answer-1">Carregando...</p>
-            </div>
-            <div class="summary-item">
-                <strong>CENA 2:</strong>
-                <p id="summary-answer-2">Carregando...</p>
-            </div>
-            <div class="summary-item">
-                <strong>CENA 3:</strong>
-                <p id="summary-answer-3">Carregando...</p>
-            </div>
-            <div class="summary-item">
-                <strong>CENA 4:</strong>
-                <p id="summary-answer-4">Carregando...</p>
-            </div>
-            <div class="summary-item">
-                <strong>CENA 5:</strong>
-                <p id="summary-answer-5">Carregando...</p>
-            </div>
-
+            <div id="detailed-summary"></div>
         </main>
         
         <a href="index.html" class="cta-button" style="margin-top: 2rem;">Voltar ao Início</a>
@@ -62,12 +40,39 @@
                 document.getElementById('summary-group').textContent = quizResults.group;
                 document.getElementById('summary-score').textContent = `${quizResults.score} de ${quizResults.totalQuestions}`;
 
-                quizResults.answers.forEach((answer, index) => {
-                    const answerElement = document.getElementById(`summary-answer-${index + 1}`);
-                    if (answerElement) {
-                        // Substitui ponto e vírgula por quebras de linha para melhor visualização
-                        answerElement.innerHTML = answer.replace(/; /g, '<br>');
-                    }
+                const summaryContainer = document.getElementById('detailed-summary');
+                
+                quizResults.detailedAnswers.forEach(result => {
+                    const questionBlock = document.createElement('div');
+                    questionBlock.classList.add('summary-item');
+
+                    const questionTitle = document.createElement('strong');
+                    questionTitle.textContent = result.questionText.replace('Selecione a(s) técnica(s) utilizada(s):', '');
+                    questionBlock.appendChild(questionTitle);
+                    
+                    const optionsList = document.createElement('ul');
+                    optionsList.classList.add('feedback-list');
+
+                    result.allOptions.forEach(option => {
+                        const optionItem = document.createElement('li');
+                        optionItem.textContent = option;
+                        
+                        const isCorrect = result.correctAnswers.includes(option);
+                        const wasSelected = result.userSelection.includes(option);
+
+                        if (wasSelected && isCorrect) {
+                            optionItem.classList.add('correct'); // Acertou
+                        } else if (wasSelected && !isCorrect) {
+                            optionItem.classList.add('incorrect'); // Errou
+                        } else if (!wasSelected && isCorrect) {
+                            optionItem.classList.add('missed'); // Não marcou, mas era correta
+                        }
+                        
+                        optionsList.appendChild(optionItem);
+                    });
+
+                    questionBlock.appendChild(optionsList);
+                    summaryContainer.appendChild(questionBlock);
                 });
 
                 localStorage.removeItem('quizResults');

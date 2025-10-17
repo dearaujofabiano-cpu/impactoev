@@ -87,6 +87,7 @@
             const formActionURL = 'URL_DO_SEU_FORMULARIO_AQUI/formResponse'; // MANTENHA SEU LINK AQUI
             const groupName = localStorage.getItem('groupName');
             
+            // Envia os dados para o Google Forms (código existente)
             const formData = new FormData();
             formData.append('ENTRY_NOME_GRUPO_AQUI', groupName); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_RESPOSTA_1_AQUI', userAnswers[0] || 'N/A'); // MANTENHA SEU ENTRY AQUI
@@ -96,11 +97,21 @@
             formData.append('ENTRY_RESPOSTA_5_AQUI', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
             
+            // NOVO: Prepara um objeto detalhado para a página de resumo
+            const detailedResults = questions.map((question, index) => {
+                return {
+                    questionText: question.question,
+                    allOptions: question.options,
+                    correctAnswers: question.correctAnswers,
+                    userSelection: userAnswers[index] ? userAnswers[index].split('; ') : []
+                };
+            });
+
             const quizData = {
                 group: groupName,
                 score: score,
                 totalQuestions: maxScore,
-                answers: userAnswers
+                detailedAnswers: detailedResults // Enviando o relatório detalhado
             };
             localStorage.setItem('quizResults', JSON.stringify(quizData));
 
@@ -118,6 +129,7 @@
                 console.error('Erro ao enviar o formulário:', error);
                 alert('Houve um erro ao enviar sua resposta.');
             }
+      
         }
 
         nextButton.addEventListener('click', () => {
