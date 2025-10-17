@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Impacto EV - Chevrolet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" id="quiz-page">
+        <header class="page-header">
+            <h2 id="question-counter">Pergunta 1 de 5</h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <h3 id="question-text">Carregando pergunta...</h3>
+        </header>
+
+        <main>
+            <div id="answer-options" class="answer-options-grid">
+                </div>
+            <button id="next-button" class="cta-button" style="margin-top: 2rem;">Próxima Pergunta</button>
+        </main>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "CENA 1 – Selecione a(s) técnica(s) utilizada(s):",
+                options: [ "Técnica Carnegie: interesse genuíno + chamar pelo nome", "Voss: rotulagem de emoções + Carnegie: fazer sentir-se importante", "Fisher & Ury: foco em interesses, não em posições", "Voss: espelhamento" ],
+                correctAnswers: [ "Técnica Carnegie: interesse genuíno + chamar pelo nome" ]
+            },
+            {
+                question: "CENA 2 – Selecione a(s) técnica(s) utilizada(s):",
+                options: [ "Carnegie: interesse genuíno", "Voss: rotulagem de emoções", "Carnegie: fazer sentir-se importante", "Fisher & Ury: foco em interesses, não em posições", "Voss: espelhamento" ],
+                correctAnswers: [ "Voss: rotulagem de emoções", "Carnegie: fazer sentir-se importante" ]
+            },
+            {
+                question: "CENA 3 – Selecione a(s) técnica(s) utilizada(s):",
+                options: [ "Carnegie: interesse genuíno", "Voss: rotulagem de emoções", "Fisher & Ury: foco em interesses, não em posições", "Voss: espelhamento", "Cialdini: prova social", "Cialdini: autoridade" ],
+                correctAnswers: [ "Fisher & Ury: foco em interesses, não em posições", "Voss: espelhamento", "Cialdini: prova social", "Cialdini: autoridade" ]
+            },
+            {
+                question: "CENA 4 – Selecione a(s) técnica(s) utilizada(s):",
+                options: [ "Carnegie: interesse genuíno", "Cialdini: autoridade", "Fisher & Ury: critérios objetivos", "Cialdini: prova social", "Cialdini: escassez", "Voss: rotulagem de emoções", "Fisher & Ury: foco em interesses, não em posições", "Voss: espelhamento" ],
+                correctAnswers: [ "Cialdini: autoridade", "Fisher & Ury: critérios objetivos", "Cialdini: prova social", "Cialdini: escassez" ]
+            },
+            {
+                question: "CENA 5 – Selecione a(s) técnica(s) utilizada(s):",
+                options: [ "Carnegie: focar na família, fazer sentir-se importante", "Cialdini: prova social", "Voss: perguntas calibradas", "Fisher & Ury: critérios objetivos", "Carnegie: valorização sincera", "Cialdini: afinidade", "Voss: rotulagem de emoções", "Cialdini: escassez", "Carnegie: interesse genuíno", "Fisher & Ury: foco em interesses, não em posições", "Voss: espelhamento" ],
+                correctAnswers: [ "Carnegie: focar na família, fazer sentir-se importante", "Cialdini: prova social", "Voss: perguntas calibradas", "Fisher & Ury: critérios objetivos", "Carnegie: valorização sincera", "Cialdini: afinidade", "Voss: rotulagem de emoções", "Cialdini: escassez" ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        const userAnswers = [];
+        let score = 0;
+
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const questionText = document.getElementById('question-text');
+        const answerOptionsContainer = document.getElementById('answer-options');
+        const nextButton = document.getElementById('next-button');
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionCounter.textContent = `Pergunta ${currentQuestionIndex + 1} de ${questions.length}`;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+            questionText.textContent = currentQuestion.question;
+
+            answerOptionsContainer.innerHTML = '';
+            currentQuestion.options.forEach((option, index) => {
+                const optionId = `option-${index}`;
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('answer-option');
+                optionElement.innerHTML = `<input type="checkbox" name="answer" id="${optionId}" value="${option}"><label for="${optionId}">${option}</label>`;
+                answerOptionsContainer.appendChild(optionElement);
+            });
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextButton.textContent = 'Finalizar e Enviar Respostas';
+            }
+        }
+
+        async function submitToGoogleForms() {
+            const formActionURL = 'https://docs.google.com/forms/d/e/1FAIpQLSeweMFWFOvAIix3AjcfDxfkvgrlVKhvCvaPEnClv0WjSKJ6YA/viewform?usp=pp_url&entry.1854096429=teste1&entry.1555702222=teste2&entry.911238657=teste3&entry.1716130030=teste4&entry.1562587714=teste5&entry.1635294930=teste6&entry.2039268844=teste6';
+            const groupName = localStorage.getItem('groupName');
+            
+            const formData = new FormData();
+            formData.append('entry.1854096429', groupName);
+            formData.append('entry.1555702222', userAnswers[0] || 'N/A');
+            formData.append('entry.911238657', userAnswers[1] || 'N/A');
+            formData.append('entry.1716130030', userAnswers[2] || 'N/A');
+            formData.append('entry.1562587714', userAnswers[3] || 'N/A');
+            formData.append('entry.1635294930', userAnswers[4] || 'N/A');
+            formData.append('entry.2039268844', `${score} de ${questions.length}`);
+            
+            try {
+                await fetch(formActionURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: new URLSearchParams(formData)
+                });
+                alert(`Quiz finalizado! Sua pontuação: ${score} de ${questions.length}. Respostas enviadas com sucesso!`);
+                localStorage.removeItem('groupName');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Erro ao enviar o formulário:', error);
+                alert('Houve um erro ao enviar sua resposta.');
+            }
+        }
+
+        nextButton.addEventListener('click', () => {
+            const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
+            if (selectedOptions.length === 0) {
+                alert('Por favor, selecione pelo menos uma resposta.');
+                return;
+            }
+
+            const selectedValues = Array.from(selectedOptions).map(cb => cb.value);
+            userAnswers.push(selectedValues.join('; '));
+
+            const correctAnswers = questions[currentQuestionIndex].correctAnswers;
+            const isCorrect = selectedValues.length === correctAnswers.length && selectedValues.every(val => correctAnswers.includes(val));
+            
+            if (isCorrect) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                submitToGoogleForms();
+            }
+        });
+
+        if (!localStorage.getItem('groupName')) {
+            window.location.href = 'index.html';
+        } else {
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
