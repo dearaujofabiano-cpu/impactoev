@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados do Quiz - Chevrolet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" id="summary-page">
+        <header class="page-header">
+            <h2>Quiz Finalizado com Sucesso!</h2>
+            <p>Confira abaixo o resumo das suas respostas e sua pontuação.</p>
+        </header>
+
+        <main class="summary-box">
+            <h3>Seu Resultado:</h3>
+            
+            <div class="summary-item">
+                <strong>Grupo:</strong>
+                <p id="summary-group">Carregando...</p>
+            </div>
+            
+            <div class="summary-item">
+                <strong>Pontuação Final:</strong>
+                <p id="summary-score" style="font-weight: bold; font-size: 1.2rem;">Carregando...</p>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Suas Respostas:</h3>
+
+            <div class="summary-item">
+                <strong>CENA 1:</strong>
+                <p id="summary-answer-1">Carregando...</p>
+            </div>
+            <div class="summary-item">
+                <strong>CENA 2:</strong>
+                <p id="summary-answer-2">Carregando...</p>
+            </div>
+            <div class="summary-item">
+                <strong>CENA 3:</strong>
+                <p id="summary-answer-3">Carregando...</p>
+            </div>
+            <div class="summary-item">
+                <strong>CENA 4:</strong>
+                <p id="summary-answer-4">Carregando...</p>
+            </div>
+            <div class="summary-item">
+                <strong>CENA 5:</strong>
+                <p id="summary-answer-5">Carregando...</p>
+            </div>
+
+        </main>
+        
+        <a href="index.html" class="cta-button" style="margin-top: 2rem;">Voltar ao Início</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizResults = JSON.parse(localStorage.getItem('quizResults'));
+
+            if (quizResults) {
+                document.getElementById('summary-group').textContent = quizResults.group;
+                document.getElementById('summary-score').textContent = `${quizResults.score} de ${quizResults.totalQuestions}`;
+
+                quizResults.answers.forEach((answer, index) => {
+                    const answerElement = document.getElementById(`summary-answer-${index + 1}`);
+                    if (answerElement) {
+                        // Substitui ponto e vírgula por quebras de linha para melhor visualização
+                        answerElement.innerHTML = answer.replace(/; /g, '<br>');
+                    }
+                });
+
+                localStorage.removeItem('quizResults');
+            } else {
+                document.querySelector('.summary-box').innerHTML = "<p>Nenhum resultado recente para exibir.</p>";
+            }
+        });
+    </script>
+</body>
+</html>
