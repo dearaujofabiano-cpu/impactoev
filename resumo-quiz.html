@@ -26,6 +26,15 @@
                 <p id="summary-score" style="font-weight: bold; font-size: 1.2rem;">Carregando...</p>
             </div>
 
+            <div class="legend-box">
+                <h4>Legenda do Feedback:</h4>
+                <ul>
+                    <li class="correct">✔ Acerto: Você marcou e a resposta era correta.</li>
+                    <li class="incorrect">✖ Erro: Você marcou, mas a resposta era incorreta.</li>
+                    <li class="missed">⚫ Omissão: Você não marcou, mas a resposta era correta.</li>
+                    <li>⚪ Acerto Passivo: Você não marcou e a resposta era incorreta.</li>
+                </ul>
+            </div>
             <div id="detailed-summary"></div>
         </main>
         
@@ -47,7 +56,8 @@
                     questionBlock.classList.add('summary-item');
 
                     const questionTitle = document.createElement('strong');
-                    questionTitle.textContent = result.questionText.replace('Selecione a(s) técnica(s) utilizada(s):', '');
+                    // Ajuste para pegar o nome da Cena corretamente
+                    questionTitle.textContent = result.questionText.split('–')[0].trim();
                     questionBlock.appendChild(questionTitle);
                     
                     const optionsList = document.createElement('ul');
@@ -61,11 +71,11 @@
                         const wasSelected = result.userSelection.includes(option);
 
                         if (wasSelected && isCorrect) {
-                            optionItem.classList.add('correct'); // Acertou
+                            optionItem.classList.add('correct');
                         } else if (wasSelected && !isCorrect) {
-                            optionItem.classList.add('incorrect'); // Errou
+                            optionItem.classList.add('incorrect');
                         } else if (!wasSelected && isCorrect) {
-                            optionItem.classList.add('missed'); // Não marcou, mas era correta
+                            optionItem.classList.add('missed');
                         }
                         
                         optionsList.appendChild(optionItem);

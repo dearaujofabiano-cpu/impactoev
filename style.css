@@ -93,3 +93,41 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .feedback-list li.missed::before {
     content: '•';
 }
+/* --- ESTILOS PARA A LEGENDA DE FEEDBACK --- */
+.legend-box {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.legend-box h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.legend-box ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.legend-box li {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.legend-box li::before {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 1.2em; /* Deixa o ícone um pouco maior */
+}
+
+/* Adicionando o ícone para o Acerto Passivo */
+.legend-box li:not([class])::before {
+    content: '⚪';
+    color: var(--text-color);
+}
