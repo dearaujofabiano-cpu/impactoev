@@ -51,3 +51,45 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .answer-option label { cursor: pointer; display: block; width: 100%; }
 .answer-option input[type="radio"]:checked + label { color: var(--primary-color); font-weight: 700; }
 @media (min-width: 768px) { .answer-options-grid { grid-template-columns: repeat(2, 1fr); } }
+/* --- NOVOS ESTILOS PARA FEEDBACK DETALHADO --- */
+.feedback-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.feedback-list li {
+    padding: 0.3rem 0;
+    border-radius: 5px;
+}
+
+.feedback-list li::before {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+/* VERDE: O participante marcou e acertou */
+.feedback-list li.correct {
+    color: #28a745; /* Verde Sucesso */
+}
+.feedback-list li.correct::before {
+    content: '✔';
+}
+
+/* VERMELHO: O participante marcou mas errou */
+.feedback-list li.incorrect {
+    color: #dc3545; /* Vermelho Erro */
+    text-decoration: line-through;
+}
+.feedback-list li.incorrect::before {
+    content: '✖';
+}
+
+/* AMARELO/CINZA: O participante NÃO marcou, mas a resposta era correta */
+.feedback-list li.missed {
+    color: #ffc107; /* Amarelo Atenção */
+    font-style: italic;
+}
+.feedback-list li.missed::before {
+    content: '•';
+}
