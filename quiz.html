@@ -56,6 +56,9 @@
         const userAnswers = [];
         let score = 0;
 
+        // NOVO: Calcula a pontuação máxima possível somando todas as respostas corretas
+        const maxScore = questions.reduce((total, q) => total + q.correctAnswers.length, 0);
+
         const questionCounter = document.getElementById('question-counter');
         const progressBar = document.getElementById('progress-bar');
         const questionText = document.getElementById('question-text');
@@ -86,7 +89,6 @@
             const formActionURL = 'URL_DO_SEU_FORMULARIO_AQUI/formResponse'; // MANTENHA SEU LINK AQUI
             const groupName = localStorage.getItem('groupName');
             
-            // Prepara os dados para enviar ao Google Forms
             const formData = new FormData();
             formData.append('ENTRY_NOME_GRUPO_AQUI', groupName); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_RESPOSTA_1_AQUI', userAnswers[0] || 'N/A'); // MANTENHA SEU ENTRY AQUI
@@ -94,36 +96,32 @@
             formData.append('ENTRY_RESPOSTA_3_AQUI', userAnswers[2] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_RESPOSTA_4_AQUI', userAnswers[3] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_RESPOSTA_5_AQUI', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${questions.length}`); // MANTENHA SEU ENTRY AQUI
+            // ATUALIZADO: Envia a pontuação com o novo total máximo
+            formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
             
-            // Prepara os dados para a PÁGINA DE RESUMO
             const quizData = {
                 group: groupName,
                 score: score,
-                totalQuestions: questions.length,
+                totalQuestions: maxScore, // ATUALIZADO: Passa o novo total para a página de resumo
                 answers: userAnswers
             };
             localStorage.setItem('quizResults', JSON.stringify(quizData));
 
             try {
-                // Envia para o Google
                 await fetch(formActionURL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: new URLSearchParams(formData)
                 });
                 
-                // Limpa o nome do grupo original
                 localStorage.removeItem('groupName');
-                
-                // Redireciona para a NOVA página de resumo
                 window.location.href = 'resumo-quiz.html';
 
             } catch (error) {
                 console.error('Erro ao enviar o formulário:', error);
                 alert('Houve um erro ao enviar sua resposta.');
             }
-                }
+        }
 
         nextButton.addEventListener('click', () => {
             const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
@@ -135,12 +133,13 @@
             const selectedValues = Array.from(selectedOptions).map(cb => cb.value);
             userAnswers.push(selectedValues.join('; '));
 
+            // LÓGICA DE PONTUAÇÃO ATUALIZADA
             const correctAnswers = questions[currentQuestionIndex].correctAnswers;
-            const isCorrect = selectedValues.length === correctAnswers.length && selectedValues.every(val => correctAnswers.includes(val));
-            
-            if (isCorrect) {
-                score++;
-            }
+            selectedValues.forEach(selectedValue => {
+                if (correctAnswers.includes(selectedValue)) {
+                    score++; // Adiciona 1 ponto para cada resposta correta selecionada
+                }
+            });
 
             currentQuestionIndex++;
 
