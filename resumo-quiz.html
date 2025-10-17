@@ -31,10 +31,9 @@
                 <ul>
                     <li class="correct">✔ Acerto: Você marcou e a resposta era correta.</li>
                     <li class="incorrect">✖ Erro: Você marcou, mas a resposta era incorreta.</li>
-                    <li class="missed">⚫ Omissão: Você não marcou, mas a resposta era correta.</li>
-                    <li>⚪ Acerto Passivo: Você não marcou e a resposta era incorreta.</li>
                 </ul>
             </div>
+
             <div id="detailed-summary"></div>
         </main>
         
@@ -56,32 +55,37 @@
                     questionBlock.classList.add('summary-item');
 
                     const questionTitle = document.createElement('strong');
-                    // Ajuste para pegar o nome da Cena corretamente
                     questionTitle.textContent = result.questionText.split('–')[0].trim();
                     questionBlock.appendChild(questionTitle);
                     
-                    const optionsList = document.createElement('ul');
-                    optionsList.classList.add('feedback-list');
+                    // LÓGICA ATUALIZADA: Verifica se a questão foi anulada
+                    if (result.isAnulled) {
+                        const anulledMessage = document.createElement('p');
+                        anulledMessage.classList.add('anulled-message');
+                        anulledMessage.textContent = 'Questão anulada (todas as opções foram marcadas).';
+                        questionBlock.appendChild(anulledMessage);
+                    } else {
+                        const optionsList = document.createElement('ul');
+                        optionsList.classList.add('feedback-list');
 
-                    result.allOptions.forEach(option => {
-                        const optionItem = document.createElement('li');
-                        optionItem.textContent = option;
-                        
-                        const isCorrect = result.correctAnswers.includes(option);
-                        const wasSelected = result.userSelection.includes(option);
+                        result.allOptions.forEach(option => {
+                            const optionItem = document.createElement('li');
+                            optionItem.textContent = option;
+                            
+                            const isCorrect = result.correctAnswers.includes(option);
+                            const wasSelected = result.userSelection.includes(option);
 
-                        if (wasSelected && isCorrect) {
-                            optionItem.classList.add('correct');
-                        } else if (wasSelected && !isCorrect) {
-                            optionItem.classList.add('incorrect');
-                        } else if (!wasSelected && isCorrect) {
-                            optionItem.classList.add('missed');
-                        }
-                        
-                        optionsList.appendChild(optionItem);
-                    });
-
-                    questionBlock.appendChild(optionsList);
+                            if (wasSelected && isCorrect) {
+                                optionItem.classList.add('correct'); // Verde
+                            } else if (wasSelected && !isCorrect) {
+                                optionItem.classList.add('incorrect'); // Vermelho
+                            }
+                            // Opções não marcadas ficam com a cor padrão (branco)
+                            
+                            optionsList.appendChild(optionItem);
+                        });
+                        questionBlock.appendChild(optionsList);
+                    }
                     summaryContainer.appendChild(questionBlock);
                 });
 

@@ -51,7 +51,7 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .answer-option label { cursor: pointer; display: block; width: 100%; }
 .answer-option input[type="radio"]:checked + label { color: var(--primary-color); font-weight: 700; }
 @media (min-width: 768px) { .answer-options-grid { grid-template-columns: repeat(2, 1fr); } }
-/* --- NOVOS ESTILOS PARA FEEDBACK DETALHADO (VERSÃO CORRIGIDA) --- */
+/* --- NOVOS ESTILOS PARA FEEDBACK DETALHADO (VERSÃO SIMPLIFICADA) --- */
 .feedback-list {
     list-style-type: none;
     padding-left: 0;
@@ -61,8 +61,7 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .feedback-list li {
     padding: 0.3rem 0;
     border-radius: 5px;
-    /* A cor padrão será o branco/cinza para o acerto passivo */
-    color: var(--text-color);
+    color: var(--text-color); /* Cor padrão para não marcadas */
 }
 
 .feedback-list li::before {
@@ -72,7 +71,7 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 
 /* VERDE: O participante marcou e acertou */
 .feedback-list li.correct {
-    color: #28a745; /* Verde Sucesso */
+    color: #28a745;
 }
 .feedback-list li.correct::before {
     content: '✔';
@@ -80,24 +79,24 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 
 /* VERMELHO: O participante marcou mas errou */
 .feedback-list li.incorrect {
-    color: #dc3545; /* Vermelho Erro */
+    color: #dc3545;
     text-decoration: line-through;
 }
 .feedback-list li.incorrect::before {
     content: '✖';
 }
 
-/* AMARELO: O participante NÃO marcou, mas a resposta era correta */
-.feedback-list li.missed {
+/* NOVO: Estilo para a mensagem de questão anulada */
+.anulled-message {
     color: #ffc107; /* Amarelo Atenção */
     font-style: italic;
-}
-.feedback-list li.missed::before {
-    /* CORRIGIDO: Agora usa o círculo preto ⚫ da legenda */
-    content: '⚫';
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 193, 7, 0.1);
+    border-radius: 5px;
 }
 
-/* --- ESTILOS PARA A LEGENDA DE FEEDBACK (SEM ALTERAÇÃO, MAS INCLUÍDO POR SEGURANÇA) --- */
+/* --- ESTILOS PARA A LEGENDA DE FEEDBACK (SIMPLIFICADA) --- */
 .legend-box {
     margin-top: 2.5rem;
     padding-top: 1.5rem;
@@ -128,9 +127,4 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
     margin-right: 10px;
     font-weight: bold;
     font-size: 1.2em;
-}
-
-.legend-box li:not([class])::before {
-    content: '⚪';
-    color: var(--text-color);
 }
