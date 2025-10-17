@@ -83,6 +83,7 @@
             }
         }
 
+        // --- FUNÇÃO ATUALIZADA ---
         async function submitToGoogleForms() {
             const formActionURL = 'URL_DO_SEU_FORMULARIO_AQUI/formResponse'; // MANTENHA SEU LINK AQUI
             const groupName = localStorage.getItem('groupName');
@@ -96,34 +97,20 @@
             formData.append('ENTRY_RESPOSTA_5_AQUI', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
             
-            const detailedResults = questions.map((question, index) => {
-                const userSelection = userAnswers[index] ? userAnswers[index].split('; ') : [];
-                return {
-                    questionText: question.question,
-                    allOptions: question.options,
-                    correctAnswers: question.correctAnswers,
-                    userSelection: userSelection,
-                    isAnulled: userSelection.length === question.options.length 
-                };
-            });
-
-            const quizData = {
-                group: groupName,
-                score: score,
-                totalQuestions: maxScore,
-                detailedAnswers: detailedResults
-            };
-            localStorage.setItem('quizResults', JSON.stringify(quizData));
-
             try {
+                // Envia os dados para o Google Forms
                 await fetch(formActionURL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: new URLSearchParams(formData)
                 });
                 
+                // Limpa os dados da sessão
                 localStorage.removeItem('groupName');
-                window.location.href = 'resumo-quiz.html';
+
+                // Alerta o usuário e redireciona para a página inicial
+                alert('Respostas enviadas com sucesso! Obrigado por participar.');
+                window.location.href = 'index.html';
 
             } catch (error) {
                 console.error('Erro ao enviar o formulário:', error);
