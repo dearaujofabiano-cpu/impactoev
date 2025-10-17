@@ -83,7 +83,7 @@
             }
         }
 
-async function submitToGoogleForms() {
+        async function submitToGoogleForms() {
             const formActionURL = 'URL_DO_SEU_FORMULARIO_AQUI/formResponse'; // MANTENHA SEU LINK AQUI
             const groupName = localStorage.getItem('groupName');
             
@@ -96,7 +96,6 @@ async function submitToGoogleForms() {
             formData.append('ENTRY_RESPOSTA_5_AQUI', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
             
-            // ATUALIZADO: Prepara um relatório detalhado com a flag de anulação
             const detailedResults = questions.map((question, index) => {
                 const userSelection = userAnswers[index] ? userAnswers[index].split('; ') : [];
                 return {
@@ -104,7 +103,6 @@ async function submitToGoogleForms() {
                     allOptions: question.options,
                     correctAnswers: question.correctAnswers,
                     userSelection: userSelection,
-                    // NOVO: Adiciona uma flag para saber se a questão foi anulada
                     isAnulled: userSelection.length === question.options.length 
                 };
             });
@@ -133,7 +131,7 @@ async function submitToGoogleForms() {
             }
         }
       
-        }
+        // <<< O ERRO ESTAVA AQUI. O CÓDIGO ABAIXO ESTAVA FORA DE QUALQUER LUGAR. AGORA ESTÁ CORRETO.
 
         nextButton.addEventListener('click', () => {
             const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
@@ -145,20 +143,17 @@ async function submitToGoogleForms() {
             const selectedValues = Array.from(selectedOptions).map(cb => cb.value);
             userAnswers.push(selectedValues.join('; '));
 
-            // LÓGICA DE PONTUAÇÃO ATUALIZADA COM A NOVA REGRA
             const currentQuestion = questions[currentQuestionIndex];
             const correctAnswers = currentQuestion.correctAnswers;
             const totalOptionsInQuestion = currentQuestion.options.length;
             const selectedOptionsCount = selectedValues.length;
 
-            // APLICANDO A NOVA REGRA: Se marcar todas, a pontuação da questão é zero.
             if (selectedOptionsCount === totalOptionsInQuestion) {
-                // Não adiciona pontos, pois o usuário marcou tudo.
+                // Não adiciona pontos
             } else {
-                // Caso contrário, aplica a pontuação parcial normal.
                 selectedValues.forEach(selectedValue => {
                     if (correctAnswers.includes(selectedValue)) {
-                        score++; // Adiciona 1 ponto para cada resposta correta selecionada
+                        score++;
                     }
                 });
             }
@@ -173,10 +168,4 @@ async function submitToGoogleForms() {
         });
 
         if (!localStorage.getItem('groupName')) {
-            window.location.href = 'index.html';
-        } else {
-            loadQuestion();
-        }
-    </script>
-</body>
-</html>
+            window.
