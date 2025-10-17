@@ -51,7 +51,7 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .answer-option label { cursor: pointer; display: block; width: 100%; }
 .answer-option input[type="radio"]:checked + label { color: var(--primary-color); font-weight: 700; }
 @media (min-width: 768px) { .answer-options-grid { grid-template-columns: repeat(2, 1fr); } }
-/* --- NOVOS ESTILOS PARA FEEDBACK DETALHADO --- */
+/* --- NOVOS ESTILOS PARA FEEDBACK DETALHADO (VERSÃO CORRIGIDA) --- */
 .feedback-list {
     list-style-type: none;
     padding-left: 0;
@@ -61,6 +61,8 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .feedback-list li {
     padding: 0.3rem 0;
     border-radius: 5px;
+    /* A cor padrão será o branco/cinza para o acerto passivo */
+    color: var(--text-color);
 }
 
 .feedback-list li::before {
@@ -85,15 +87,17 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
     content: '✖';
 }
 
-/* AMARELO/CINZA: O participante NÃO marcou, mas a resposta era correta */
+/* AMARELO: O participante NÃO marcou, mas a resposta era correta */
 .feedback-list li.missed {
     color: #ffc107; /* Amarelo Atenção */
     font-style: italic;
 }
 .feedback-list li.missed::before {
-    content: '•';
+    /* CORRIGIDO: Agora usa o círculo preto ⚫ da legenda */
+    content: '⚫';
 }
-/* --- ESTILOS PARA A LEGENDA DE FEEDBACK --- */
+
+/* --- ESTILOS PARA A LEGENDA DE FEEDBACK (SEM ALTERAÇÃO, MAS INCLUÍDO POR SEGURANÇA) --- */
 .legend-box {
     margin-top: 2.5rem;
     padding-top: 1.5rem;
@@ -123,10 +127,9 @@ header p { font-size: 1.2rem; font-weight: 300; color: #aaa; margin-bottom: 3rem
 .legend-box li::before {
     margin-right: 10px;
     font-weight: bold;
-    font-size: 1.2em; /* Deixa o ícone um pouco maior */
+    font-size: 1.2em;
 }
 
-/* Adicionando o ícone para o Acerto Passivo */
 .legend-box li:not([class])::before {
     content: '⚪';
     color: var(--text-color);
