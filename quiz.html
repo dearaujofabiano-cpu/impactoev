@@ -55,8 +55,6 @@
         let currentQuestionIndex = 0;
         const userAnswers = [];
         let score = 0;
-
-        // NOVO: Calcula a pontuação máxima possível somando todas as respostas corretas
         const maxScore = questions.reduce((total, q) => total + q.correctAnswers.length, 0);
 
         const questionCounter = document.getElementById('question-counter');
@@ -96,13 +94,12 @@
             formData.append('ENTRY_RESPOSTA_3_AQUI', userAnswers[2] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_RESPOSTA_4_AQUI', userAnswers[3] || 'N/A'); // MANTENHA SEU ENTRY AQUI
             formData.append('ENTRY_RESPOSTA_5_AQUI', userAnswers[4] || 'N/A'); // MANTENHA SEU ENTRY AQUI
-            // ATUALIZADO: Envia a pontuação com o novo total máximo
             formData.append('ENTRY_PONTUACAO_AQUI', `${score} de ${maxScore}`); // MANTENHA SEU ENTRY AQUI
             
             const quizData = {
                 group: groupName,
                 score: score,
-                totalQuestions: maxScore, // ATUALIZADO: Passa o novo total para a página de resumo
+                totalQuestions: maxScore,
                 answers: userAnswers
             };
             localStorage.setItem('quizResults', JSON.stringify(quizData));
@@ -133,13 +130,23 @@
             const selectedValues = Array.from(selectedOptions).map(cb => cb.value);
             userAnswers.push(selectedValues.join('; '));
 
-            // LÓGICA DE PONTUAÇÃO ATUALIZADA
-            const correctAnswers = questions[currentQuestionIndex].correctAnswers;
-            selectedValues.forEach(selectedValue => {
-                if (correctAnswers.includes(selectedValue)) {
-                    score++; // Adiciona 1 ponto para cada resposta correta selecionada
-                }
-            });
+            // LÓGICA DE PONTUAÇÃO ATUALIZADA COM A NOVA REGRA
+            const currentQuestion = questions[currentQuestionIndex];
+            const correctAnswers = currentQuestion.correctAnswers;
+            const totalOptionsInQuestion = currentQuestion.options.length;
+            const selectedOptionsCount = selectedValues.length;
+
+            // APLICANDO A NOVA REGRA: Se marcar todas, a pontuação da questão é zero.
+            if (selectedOptionsCount === totalOptionsInQuestion) {
+                // Não adiciona pontos, pois o usuário marcou tudo.
+            } else {
+                // Caso contrário, aplica a pontuação parcial normal.
+                selectedValues.forEach(selectedValue => {
+                    if (correctAnswers.includes(selectedValue)) {
+                        score++; // Adiciona 1 ponto para cada resposta correta selecionada
+                    }
+                });
+            }
 
             currentQuestionIndex++;
 
